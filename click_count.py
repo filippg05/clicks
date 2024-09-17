@@ -2,38 +2,35 @@ import requests
 import os
 from urllib.parse import urlparse
 
-API_KEY = os.getenv('VK_API_KEY')
-url = input('Введите ссылку: ')
-
 
 def is_shorten_link(url):
     parsed = urlparse(url)
-    if 'vk.cc' in parsed.netloc:
-        return True
+    return 'vk.cc' in parsed.netloc
+        
 
 
-def shorten_link(API_KEY, url):
+def shorten_link(api_key, url):
     method = "https://api.vk.ru/method/utils.getShortLink"
     params = {
-        "access_token": API_KEY,
+        "access_token": api_key,
         "v": "5.131",
         "url": url,
     }
 
     response = requests.get(method, params=params)
     response.raise_for_status()
-    data = response.json()
-    return data
+    short_link = response.json()
+    return short_link
     
-   
-def count_clicks(API_KEY, url):
+
+def count_clicks(api_key, url):
     method = "https://api.vk.ru/method/utils.getLinkStats"
     parsed = urlparse(url)
     path = parsed.path
     if path.startswith('/'):
         path = path[1:]
     params = {
-        "access_token": API_KEY,
+        "access_token": api_key,
         "v": "5.199",
         "key": path,
         "interval": 'forever',
@@ -41,22 +38,24 @@ def count_clicks(API_KEY, url):
     }
     response = requests.get(method, params=params)
     response.raise_for_status()
-    data = response.json()
-    return data
+    clicks = response.json()
+    return clicks
 
 
 def main():
+    api_key = os.environ.get('VK_API_KEY')
+    url = input('Введите ссылку: ')
     if is_shorten_link(url):
         try:
-            if 'views' not in count_clicks(API_KEY,url)['response']['stats']:
+            if 'views' not in count_clicks(api_key,url)['response']['stats']:
                 print ('По вашей ссылке нет кликов')
             else:
-                print('Всего кликов по вашей ссылке: ', count_clicks(API_KEY,url)['response']['stats'][0]['views'] )
+                print('Всего кликов по вашей ссылке: ', count_clicks(api_key,url)['response']['stats'][0]['views'] )
         except requests.exceptions.HTTPError as e:
             print(f'Ошибка при получении статистики кликов: {e}')
     else:
         try:
-            print('Ваша сокращенная ссылка: ', shorten_link(API_KEY,url)['response']['short_url'])
+            print('Ваша сокращенная ссылка: ', shorten_link(api_key,url)['response']['short_url'])
         except requests.exceptions.HTTPError as e:
             print(f'Ошибка при сокращении ссылки: {e}')
 
