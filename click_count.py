@@ -6,8 +6,7 @@ from urllib.parse import urlparse
 def is_shorten_link(url):
     parsed = urlparse(url)
     return 'vk.cc' in parsed.netloc
-        
-
+      
 
 def shorten_link(api_key, url):
     method = "https://api.vk.ru/method/utils.getShortLink"
@@ -43,23 +42,21 @@ def count_clicks(api_key, url):
 
 
 def main():
-    api_key = os.environ.get('VK_API_KEY')
+    api_key = os.environ('VK_API_KEY')
     url = input('Введите ссылку: ')
     if is_shorten_link(url):
         try:
-            if 'views' not in count_clicks(api_key,url)['response']['stats']:
-                print ('По вашей ссылке нет кликов')
+            if 'views' not in count_clicks(api_key, url)['response']['stats']:
+                print('По вашей ссылке нет кликов')
             else:
-                print('Всего кликов по вашей ссылке: ', count_clicks(api_key,url)['response']['stats'][0]['views'] )
+                print('Всего кликов по вашей ссылке: ', count_clicks(api_key, url)['response']['stats'][0]['views'])
         except requests.exceptions.HTTPError as e:
             print(f'Ошибка при получении статистики кликов: {e}')
     else:
         try:
-            print('Ваша сокращенная ссылка: ', shorten_link(api_key,url)['response']['short_url'])
+            print('Ваша сокращенная ссылка: ', shorten_link(api_key, url)['response']['short_url'])
         except requests.exceptions.HTTPError as e:
             print(f'Ошибка при сокращении ссылки: {e}')
-
-
 
 
 if __name__ == "__main__":
