@@ -1,5 +1,6 @@
 import requests
 import os
+import argparse
 from urllib.parse import urlparse
 
 
@@ -42,8 +43,13 @@ def count_clicks(api_key, url):
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description='Получите сокращенную ссылку или количество кликов по ней.'
+        )
+    parser.add_argument("-link",  help="Введите ссылку",)
+    args = parser.parse_args()
     api_key = os.environ['VK_API_KEY']
-    url = input('Введите ссылку: ')
+    url = args.link
     if is_shorten_link(url):
         try:
             if 'views' not in count_clicks(api_key, url)['response']['stats']:
