@@ -11,7 +11,17 @@ Python3 должен быть уже установлен.
 ```
 pip install -r requirements.txt
 ```
+Далее делать по примеру, как на скриншоте
 
+![alt text](https://i.postimg.cc/HLc43J6n/1123asd.png)
+```
+python click_count.py -link "https://www.example.com" 
+```
+Ввместо example.com тот сайт, ссылку на который вам нужно сократить.
+```
+python click_count.py -link 'https://vk.cc/6YpJQE'
+```
+Если у вас уже есть сокращенная ссылка через VK API, то таким же способом можно проверить количество кликов на нее за всё время.
 ### Цель проекта
 
 Код написан в образовательных целях на онлайн-курсе для веб-разработчиков [dvmn.org](https://dvmn.org/).
